@@ -1,7 +1,7 @@
 fourch
 ======
 
-.. _docs: https://fourch.readthedocs.org
+.. _docs: https://4ch.readthedocs.org
 .. _repo: https://github.com/plausibility/4ch
 
 fourch (stylized as 4ch) is a wrapper to the 4chan JSON API, provided by moot. It allows you to interact with 4chan (in a READONLY way) easily through your scripts.
