@@ -93,7 +93,7 @@ class board(object):
         if r.status_code != requests.codes.ok:
             r.raise_for_status()
 
-        json = r.json
+        json = r.json()
         threads = []
 
         for thj in json["threads"]:

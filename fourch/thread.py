@@ -59,7 +59,7 @@ class thread(object):
         if r.status_code == requests.codes.not_found:
             return None
         elif r.status_code == requests.codes.ok:
-            return thread.from_json(board, r.json, res=res, last_modified=r.headers["last-modified"])
+            return thread.from_json(board, r.json(), res=res, last_modified=r.headers["last-modified"])
         else:
             r.raise_for_status()
 
@@ -180,7 +180,7 @@ class thread(object):
             self.omitted_images = 0
 
             self._last_modified = r.headers["last-modified"]
-            replies = r.json["posts"]
+            replies = r.json()["posts"]
 
             post_count = len(self.replies)
             self.op = reply(self, replies.pop(0))
