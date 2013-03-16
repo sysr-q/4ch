@@ -23,7 +23,7 @@ class board(object):
         self._https = https
         self._urls = urls or fourch.urls
         self._session = requests.Session()
-        self._session.headers.update(headers={"User-Agent": "fourch/{0} (@https://github.com/plausibility/4ch)".format(fourch.__version__)})
+        self._session.headers.update({"User-Agent": "fourch/{0} (@https://github.com/plausibility/4ch)".format(fourch.__version__)})
         self._cache = {}  # id: fourch.thread, this stores prefetched threads
 
     @property
