@@ -22,7 +22,8 @@ class board(object):
         self.name = name
         self._https = https
         self._urls = urls or fourch.urls
-        self._session = requests.session(headers={"User-Agent": "fourch/{0} (@https://github.com/plausibility/4ch)".format(fourch.__version__)})
+        self._session = requests.Session()
+        self._session.headers.update({"User-Agent": "fourch/{0} (@https://github.com/plausibility/4ch)".format(fourch.__version__)})
         self._cache = {}  # id: fourch.thread, this stores prefetched threads
 
     @property
@@ -92,7 +93,7 @@ class board(object):
         if r.status_code != requests.codes.ok:
             r.raise_for_status()
 
-        json = r.json
+        json = r.json()
         threads = []
 
         for thj in json["threads"]:
