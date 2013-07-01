@@ -20,7 +20,7 @@ class board(object):
             :type urls: dict or None
         """
         self.name = name
-        self._https = https
+        self.https = https
         self._urls = urls or fourch.urls
         self._session = requests.Session()
         self._session.headers.update({"User-Agent": "fourch/{0} (@https://github.com/plausibility/4ch)".format(fourch.__version__)})
@@ -38,17 +38,7 @@ class board(object):
             :return: the protocol to use
             :rtype: str
         """
-        return "https://" if self._https else "http://"
-
-    def https(self, s):
-        """ Set the HTTPS variable, allowing dynamic changes to https or http urls.
-
-            :param s: the new https boolean
-            :type s: bool
-        """
-        if not isinstance(s, bool):
-            return
-        self._https = s
+        return "https://" if self.https else "http://"
 
     def threads(self):
         """ Get a list of all the threads alive, and which page they're on.
