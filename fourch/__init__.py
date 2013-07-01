@@ -3,7 +3,8 @@
 
     It uses the documentation of the 4chan API located at: https://github.com/4chan/4chan-API
     
-    This is based off of the API last updated Jan 4th, 2013.
+    This is based off of the API last updated March 22, 2013.
+    (4chan-API commit: 9a76db1162173cc56f04bf34e09b38d4376314c3)
 """
 from ._version import __version__
 

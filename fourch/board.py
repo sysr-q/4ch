@@ -50,6 +50,16 @@ class board(object):
             return
         self._https = s
 
+    def threads(self):
+        """ Get a list of all the threads alive, and which page they're on.
+
+            You can cross-reference this with a threads number to see which page
+            it's on at the time of calling.
+        """
+        url = self._base_url + self._urls["api_threads"].format(board=self.name)
+        r = self._session.get(url)
+        return r.json()
+
     def thread(self, res, update_cache=True):
         """ Create a :class:`fourch.thread` object.
             If the thread has already been fetched, return the cached thread.
