@@ -40,6 +40,13 @@ class board(object):
         """
         return "https://" if self.https else "http://"
 
+    def catalog(self):
+        """ Get a list of all the thread OPs and last replies.
+        """
+        url = self._base_url + self._urls["api_catalog"].format(board=self.name)
+        r = self._session.get(url)
+        return r.json()
+
     def threads(self):
         """ Get a list of all the threads alive, and which page they're on.
 
