@@ -6,6 +6,8 @@ fourch
 
 fourch (stylized as 4ch) is a wrapper to the 4chan JSON API, provided by moot. It allows you to interact with 4chan (in a READONLY way) easily through your scripts.
 
+Originally <strike>stolen</strike> forked from `e000/py-4chan <github.com/e000/py-4chan>`_, but then I moved repos and renamed stuff since I'm pretty bad about that.
+
 Requirements
 ------------
 
