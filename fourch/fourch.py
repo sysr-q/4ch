@@ -9,7 +9,7 @@ urls = {
 
     # These are tacked to the end of the api url after formatting.
     "api_board": "/{board}/{page}.json",
-    "api_thread": "/{board}/res/{thread}.json",
+    "api_thread": "/{board}/thread/{thread}.json",
     "api_threads": "/{board}/threads.json",
     "api_catalog": "/{board}/catalog.json"
 }

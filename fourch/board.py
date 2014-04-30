@@ -82,9 +82,9 @@ class board(object):
             self._cache[res] = t
         return t
 
-    def page(self, page=0, update_each=False):
+    def page(self, page=1, update_each=False):
         """ Return all the threads in a single page.
-            The page number is zero-indexed. The first page is 0, second is 1, etc.
+            The page number is now one-indexed. The first page is 1, second is 2, etc.
 
             If a thread has already been cached, return the cache entry rather than making a new thread.
 

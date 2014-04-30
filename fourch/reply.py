@@ -194,14 +194,14 @@ class reply(object):
             "url": "",
             "thumb_url": ""
         }
-        f["url"] = "{0}{1}/{2}/src/{3}{4}".format(
+        f["url"] = "{0}{1}/{2}/{3}{4}".format(
             self._thread._board._proto,
             fourch.urls["images"],
             self._thread._board.name,
             f["renamed"],
             f["extension"]
         )
-        f["thumb_url"] = "{0}{1}/{2}/thumb{3}s.jpg".format(
+        f["thumb_url"] = "{0}{1}/{2}/{3}s.jpg".format(
             self._thread._board._proto,
             fourch.urls["thumbs"],
             self._thread._board.name,
