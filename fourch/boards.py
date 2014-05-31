@@ -60,6 +60,6 @@ def boards(https=False):
         r.raise_for_status()
     
     boards = []
-    for json_board in json_boards = r.json()['boards']:
+    for json_board in r.json()['boards']:
         boards.append(listed_board(json_board))
     return boards
