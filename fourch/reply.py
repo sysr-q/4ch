@@ -135,7 +135,7 @@ class reply(object):
     @property
     def url(self):
         """The URL of the post on the parent thread"""
-        return "{0}{1}/{2}/res/{3}#p{4}".format(
+        return "{0}{1}/{2}/thread/{3}#p{4}".format(
             self._thread._board._proto,
             self._thread._board._urls["boards"],
             self._thread._board.name,
