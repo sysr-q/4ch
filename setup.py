@@ -38,7 +38,7 @@ if __name__ != "__main__":
 
 kw = {
     "name": "4ch",
-    "version": "0.3.0",
+    "version": "0.4.0",
     "description": "Python wrapper for the 4chan JSON API.",
     "long_description": __doc__,
     "url": "https://github.com/plausibility/4ch",
