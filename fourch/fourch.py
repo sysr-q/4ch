@@ -11,7 +11,8 @@ urls = {
     "api_board": "/{board}/{page}.json",
     "api_thread": "/{board}/thread/{thread}.json",
     "api_threads": "/{board}/threads.json",
-    "api_catalog": "/{board}/catalog.json"
+    "api_catalog": "/{board}/catalog.json",
+    "api_boards": "/boards.json"
 }
 
 

@@ -13,3 +13,4 @@ from .fourch import *
 from .thread import thread as thread
 from .board import board as board
 from .reply import reply as reply
+from .boards import boards as boards
