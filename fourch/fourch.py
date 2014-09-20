@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# vim: sw=4 expandtab softtabstop=4 autoindent
 from ._version import __version__
 
 urls = {

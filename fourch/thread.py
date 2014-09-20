@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-
+# vim: sw=4 expandtab softtabstop=4 autoindent
 import requests
 from .reply import reply
 

@@ -1,3 +1,4 @@
+# vim: sw=4 expandtab softtabstop=4 autoindent
 """ fourch (stylised as 4ch) is an easy-to-implement Python wrapper for
     4chan's JSON API, as provided by moot.
 

@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# vim: sw=4 expandtab softtabstop=4 autoindent
 import requests
 import fourch
 from .thread import thread
