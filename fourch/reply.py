@@ -4,7 +4,7 @@ import base64
 import re
 
 
-class reply(object):
+class Reply(object):
     """ This object stores information regarding a specific post
         on any given thread. It uses python properties to easily
         allow access to information.
@@ -13,8 +13,8 @@ class reply(object):
     def __init__(self, thread, json):
         """ Initialize the reply with the relevant information
 
-            :param thread: the :class:`fourch.thread` parent instance
-            :type thread: :class:`fourch.thread`
+            :param thread: the :class:`fourch.Thread` parent instance
+            :type thread: :class:`fourch.Thread`
             :param json: the json data for this post
             :type json: dict
         """
@@ -146,7 +146,7 @@ class reply(object):
     def url(self):
         """The URL of the post on the parent thread"""
         return "{0}{1}/{2}/thread/{3}#p{4}".format(
-            self._thread._board._proto,
+            self._thread._board.proto,
             self._thread._board._urls["boards"],
             self._thread._board.name,
             self._thread.res,
@@ -201,18 +201,19 @@ class reply(object):
             "thumb_height": self._json.get("tn_h", 0),
             "deleted": bool(self._json.get("filedeleted", 0)),
             "spoiler": bool(self._json.get("spoiler", 0)),
+
             "url": "",
             "thumb_url": ""
         }
         f["url"] = "{0}{1}/{2}/{3}{4}".format(
-            self._thread._board._proto,
+            self._thread._board.proto,
             fourch.urls["images"],
             self._thread._board.name,
             f["renamed"],
             f["extension"]
         )
         f["thumb_url"] = "{0}{1}/{2}/{3}s.jpg".format(
-            self._thread._board._proto,
+            self._thread._board.proto,
             fourch.urls["thumbs"],
             self._thread._board.name,
             f["renamed"]

@@ -10,9 +10,35 @@
 """
 from ._version import __version__
 
-from .fourch import *
+from .fourch import urls
 
-from .thread import thread as thread
-from .board import board as board
-from .reply import reply as reply
-from .boards import boards as boards
+from .thread import Thread
+from .board import Board
+from .reply import Reply
+
+import requests
+
+
+def boards(https=False):
+    """ Get a list of all boards on 4chan, in :class:`fourch.board.Board`
+        objects.
+
+        :param https: Should we use HTTPS or HTTP?
+        :type https: bool
+    """
+    s = requests.Session()
+    s.headers.update({
+        "User-Agent": "fourch/{0} (@https://github.com/sysr-q/4ch)".format(
+            __version__
+        )
+    })
+    proto = "https://" if https else "http://"
+    url = proto + urls['api'] + urls["api_boards"]
+    r = s.get(url)
+    if r.status_code != requests.codes.ok:
+        r.raise_for_status()
+
+    boards = []
+    for json_board in r.json()['boards']:
+        boards.append(Board(json_board['board'], https=https))
+    return boards

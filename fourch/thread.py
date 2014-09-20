@@ -1,9 +1,9 @@
 # vim: sw=4 expandtab softtabstop=4 autoindent
 import requests
-from .reply import reply
+from .reply import Reply
 
 
-class thread(object):
+class Thread(object):
     """ This object stores information about the given thread.
         It has a list of fourch.replies, as well as options to
         easily pull in updates (new posts), and create an instance
@@ -13,14 +13,14 @@ class thread(object):
     def __init__(self, board, res):
         """ Create the thread instance and initialize variables.
 
-            :param board: the :class:`fourch.board` parent instance
-            :type board: :class:`fourch.board`
+            :param board: the :class:`fourch.Board` parent instance
+            :type board: :class:`fourch.Board`
             :param res: the given threads number
             :type res: str or int
         """
         self._board = board
         self.res = res
-        self.alive = True  # has the thread died on us? 404 = True
+        self.alive = True
         self.op = None
         self.replies = []
         self.omitted_posts = 0
@@ -36,8 +36,7 @@ class thread(object):
             end = ", {0} omitted posts, {1} omitted images".format(
                 self.omitted_posts, self.omitted_images
             )
-        return "<{0}.{1} /{2}/{3}, {4} replies{5}>".format(
-            self.__class__.__module__,
+        return "<{0} /{1}/{2}, {3} replies{4}>".format(
             self.__class__.__name__,
             self._board.name,
             self.res,
@@ -52,8 +51,8 @@ class thread(object):
             and if it isn't 200 OK, it will raise_for_status().
             Actually creates the thread by calling :func:`from_json`.
 
-            :param board: the :class:`fourch.board` parent instance
-            :type board: :class:`fourch.board`
+            :param board: the :class:`fourch.Board` parent instance
+            :type board: :class:`fourch.Board`
             :param res: the given threads number
             :type res: str or int
             :param r: the requests object
@@ -62,7 +61,7 @@ class thread(object):
         if r.status_code == requests.codes.not_found:
             return None
         elif r.status_code == requests.codes.ok:
-            return thread.from_json(board,
+            return Thread.from_json(board,
                                     r.json(),
                                     res=res,
                                     last_modified=r.headers["last-modified"])
@@ -73,24 +72,24 @@ class thread(object):
     def from_json(board, json, res=None, last_modified=None):
         """ Create a thread object from the given JSON data.
 
-            :param board: the :class:`fourch.board` parent instance
-            :type board: :class:`fourch.board`
+            :param board: the :class:`fourch.Board` parent instance
+            :type board: :class:`fourch.Board`
             :param json: the json data from the 4chan API
             :type board: dict
             :param res: the given threads number
             :type res: str or int
             :param last_modified: when was the page last modified
             :type last_modified: int or None
-            :return: the created :class:`fourch.thread`
-            :rtype: :class:`fourch.thread`
+            :return: the created :class:`fourch.Thread`
+            :rtype: :class:`fourch.Thread`
         """
-        t = thread(board, res)
+        t = Thread(board, res)
         t._last_modified = last_modified
 
         replies = json["posts"]
 
-        t.op = reply(t, replies.pop(0))
-        t.replies = [reply(t, r) for r in replies]
+        t.op = Reply(t, replies.pop(0))
+        t.replies = [Reply(t, r) for r in replies]
 
         if res is None:
             t._should_update = True
@@ -120,11 +119,11 @@ class thread(object):
 
     @property
     def last_reply(self):
-        """ Return the last :class:`fourch.reply` to the thread, or the op
+        """ Return the last :class:`fourch.Reply` to the thread, or the op
             if there are no replies.
 
-            :return: the last :class:`fourch.reply` to the thread.
-            :rtype: :class:`fourch.reply`
+            :return: the last :class:`fourch.Reply` to the thread.
+            :rtype: :class:`fourch.Reply`
         """
         if not self.replies:
             return self.op
@@ -155,9 +154,9 @@ class thread(object):
         if not self.alive and not force:
             return 0
 
-        url = self._board._base_url + self._board._urls["api_thread"].format(
-            board=self._board.name, thread=self.res
-        )
+        url = self._board.url("api_thread",
+                              board=self._board.name,
+                              thread=self.res)
         headers = None
         if self._last_modified:
             # If-Modified-Since, to not waste bandwidth.
@@ -191,19 +190,19 @@ class thread(object):
             replies = r.json()["posts"]
 
             post_count = len(self.replies)
-            self.op = reply(self, replies.pop(0))
+            self.op = Reply(self, replies.pop(0))
             if not force:
                 self.replies.extend(
-                    [reply(self, p)
+                    [Reply(self, p)
                      for p in replies
                      if p["no"] > self.last_reply.number]
                 )
             else:
-                self.replies = [reply(self, p) for p in replies]
+                self.replies = [Reply(self, p) for p in replies]
             post_count_new = len(self.replies)
             post_count_diff = post_count_new - post_count
-            if not post_count_diff:
-                return 0
+            if post_count_diff < 0:
+                raise Exception("post count delta is somehow negative...")
             return post_count_diff
 
         else:
