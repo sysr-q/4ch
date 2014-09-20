@@ -84,7 +84,9 @@ class reply(object):
 
     @property
     def country(self):
-        """The country code this was posted from. Two characters, XX if unknown"""
+        """ The country code this was posted from. Two characters, XX if
+            unknown.
+        """
         return self._json.get("country", "XX")
 
     @property
@@ -112,22 +114,31 @@ class reply(object):
         """ The stripped (mostly) plain text version of the comment.
             The comment goes through various regexes to become (mostly) clean.
 
-            Some HTML will still be present, this is because Python's :mod:`HTMLParser` won't
-            escape everything, and since it's undocumented, only god may know
-            how to add more escapes.
+            Some HTML will still be present, this is because Python's
+            :mod:`HTMLParser` won't escape everything, and since it's
+            undocumented, only god may know how to add more escapes.
         """
         import HTMLParser
         com = self.comment
         # <span class="quote">&gt;text!</span>
         # --- >text!
-        com = re.sub("\<span[^>]+\>(?:&gt;|>)([^</]+)\<\/span\>", ">\\1", com, flags=re.I)
+        com = re.sub(r"\<span[^>]+\>(?:&gt;|>)([^</]+)\<\/span\>",
+                     r">\1",
+                     com,
+                     flags=re.I)
         # <a class="quotelink" href="XX#pYYYY">&gt;&gt;YYYY</a>
         # --- >>YYYY
-        com = re.sub("\<a[^>]+\>(?:&gt;|>){2}(\d+)\<\/a\>", ">>\\1", com, flags=re.I)
+        com = re.sub(r"\<a[^>]+\>(?:&gt;|>){2}(\d+)\<\/a\>",
+                     r">>\1",
+                     com,
+                     flags=re.I)
         # Add (OP) to quotelinks to op
-        com = re.sub("\>\>({0})".format(self._thread.op.number), ">>\\1 (OP)", com, flags=re.I)
+        com = re.sub(r"\>\>({0})".format(self._thread.op.number),
+                     r">>\1 (OP)",
+                     com,
+                     flags=re.I)
         # <br> or <br /> to newline
-        com = re.sub("\<br ?\/?\>", "\n", com, flags=re.I)
+        com = re.sub(r"\<br ?\/?\>", "\n", com, flags=re.I)
         # Send the remaining HTML through the HTMLParser to unescape.
         com = HTMLParser.HTMLParser().unescape(com)
         return com
@@ -143,7 +154,7 @@ class reply(object):
             self.number
         )
 
-    ## File related
+    # File related
     @property
     def has_file(self):
         """Whether or not this post has an image attached"""

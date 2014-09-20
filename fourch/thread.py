@@ -26,13 +26,17 @@ class thread(object):
         self.replies = []
         self.omitted_posts = 0
         self.omitted_images = 0
-        self._should_update = False  # If this is a precached thread, should it get updated?
-        self._last_modified = None  # HTTP Last-Modified header for If-Modified-Since
+        # If this is a precached thread, should it get updated?
+        self._should_update = False
+        # HTTP Last-Modified header for If-Modified-Since
+        self._last_modified = None
 
     def __repr__(self):
         end = ""
         if self.omitted_posts or self.omitted_images:
-            end = ", {0} omitted posts, {1} omitted images".format(self.omitted_posts, self.omitted_images)
+            end = ", {0} omitted posts, {1} omitted images".format(
+                self.omitted_posts, self.omitted_images
+            )
         return "<{0}.{1} /{2}/{3}, {4} replies{5}>".format(
             self.__class__.__module__,
             self.__class__.__name__,
@@ -59,7 +63,10 @@ class thread(object):
         if r.status_code == requests.codes.not_found:
             return None
         elif r.status_code == requests.codes.ok:
-            return thread.from_json(board, r.json(), res=res, last_modified=r.headers["last-modified"])
+            return thread.from_json(board,
+                                    r.json(),
+                                    res=res,
+                                    last_modified=r.headers["last-modified"])
         else:
             r.raise_for_status()
 
@@ -149,7 +156,9 @@ class thread(object):
         if not self.alive and not force:
             return 0
 
-        url = self._board._base_url + self._board._urls["api_thread"].format(board=self._board.name, thread=self.res)
+        url = self._board._base_url + self._board._urls["api_thread"].format(
+            board=self._board.name, thread=self.res
+        )
         headers = None
         if self._last_modified:
             # If-Modified-Since, to not waste bandwidth.
@@ -185,7 +194,11 @@ class thread(object):
             post_count = len(self.replies)
             self.op = reply(self, replies.pop(0))
             if not force:
-                self.replies.extend([reply(self, p) for p in replies if p["no"] > self.last_reply.number])
+                self.replies.extend(
+                    [reply(self, p)
+                     for p in replies
+                     if p["no"] > self.last_reply.number]
+                )
             else:
                 self.replies = [reply(self, p) for p in replies]
             post_count_new = len(self.replies)

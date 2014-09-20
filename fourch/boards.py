@@ -25,7 +25,8 @@ class listed_board:
 
     @property
     def title(self):
-        """The title of the board, e.g., 'Random', 'Paranormal', 'Television & Film'"""
+        """ The title of the board, e.g., 'Random', 'Paranormal', etc.
+        """
         return self._json['title']
 
     @property
@@ -45,14 +46,18 @@ class listed_board:
 
 
 def boards(https=False):
-    """ Get a list of all boards on 4chan, in :class:`fourch.boards.listed_board` objects
-        containing information about the boards.
+    """ Get a list of all boards on 4chan, in :class:`fourch.boards.listed_board`
+        objects containing information about the boards.
 
         :param https: Should we use HTTPS or HTTP?
         :type https: bool
     """
     s = requests.Session()
-    s.headers.update({"User-Agent": "fourch/{0} (@https://github.com/plausibility/4ch)".format(fourch.__version__)})
+    s.headers.update({
+        "User-Agent": "fourch/{0} (@https://github.com/sysr-q/4ch)".format(
+            fourch.__version__
+        )
+    })
     proto = "https://" if https else "http://"
     url = proto + fourch.urls['api'] + fourch.urls["api_boards"]
     r = s.get(url)

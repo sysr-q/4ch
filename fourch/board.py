@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
-
 import requests
 import fourch
 from .thread import thread
 
 
 class board(object):
-    """ fourch.board is the master instance which allows easy access to the creation
-        of thread objects.
+    """ fourch.board is the master instance which allows easy access to the
+        creation of thread objects.
     """
 
     def __init__(self, name, https=False, urls=None):
@@ -23,7 +22,11 @@ class board(object):
         self.https = https
         self._urls = urls or fourch.urls
         self._session = requests.Session()
-        self._session.headers.update({"User-Agent": "fourch/{0} (@https://github.com/plausibility/4ch)".format(fourch.__version__)})
+        self._session.headers.update({
+            "User-Agent": "fourch/{0} (@https://github.com/sysr-q/4ch)".format(
+                fourch.__version__
+            )
+        })
         self._cache = {}  # id: fourch.thread, this stores prefetched threads
 
     @property
@@ -33,7 +36,8 @@ class board(object):
 
     @property
     def _proto(self):
-        """ Decide which HTTP protocol to use (HTTPS or HTTP) and return it, along with slashes.
+        """ Decide which HTTP protocol to use (HTTPS or HTTP) and return it,
+            along with slashes.
 
             :return: the protocol to use
             :rtype: str
@@ -43,17 +47,17 @@ class board(object):
     def catalog(self):
         """ Get a list of all the thread OPs and last replies.
         """
-        url = self._base_url + self._urls["api_catalog"].format(board=self.name)
+        url = self._base_url+self._urls["api_catalog"].format(board=self.name)
         r = self._session.get(url)
         return r.json()
 
     def threads(self):
         """ Get a list of all the threads alive, and which page they're on.
 
-            You can cross-reference this with a threads number to see which page
-            it's on at the time of calling.
+            You can cross-reference this with a threads number to see which
+            page it's on at the time of calling.
         """
-        url = self._base_url + self._urls["api_threads"].format(board=self.name)
+        url = self._base_url+self._urls["api_threads"].format(board=self.name)
         r = self._session.get(url)
         return r.json()
 
@@ -74,7 +78,9 @@ class board(object):
                 t.update()
             return t
 
-        url = self._base_url + self._urls["api_thread"].format(board=self.name, thread=res)
+        url = self._base_url + self._urls["api_thread"].format(
+            board=self.name, thread=res
+        )
 
         r = self._session.get(url)
         t = thread.from_req(self, res, r)
@@ -84,18 +90,24 @@ class board(object):
 
     def page(self, page=1, update_each=False):
         """ Return all the threads in a single page.
-            The page number is now one-indexed. The first page is 1, second is 2, etc.
+            The page number is now one-indexed. The first page is 1, second is
+            2, etc.
 
-            If a thread has already been cached, return the cache entry rather than making a new thread.
+            If a thread has already been cached, return the cache entry rather
+            than making a new thread.
 
             :param page: page to pull threads from
             :type page: int
-            :param update_each: should each thread be updated, to pull all replies
+            :param update_each: should each thread be updated, to pull all
+                                replies
             :type update_each: bool
-            :return: a list of :class:`fourch.thread` objects, corresponding to all threads on given page
+            :return: a list of :class:`fourch.thread` objects, corresponding to
+                     all threads on given page
             :rtype: list
         """
-        url = self._base_url + self._urls["api_board"].format(board=self.name, page=page)
+        url = self._base_url + self._urls["api_board"].format(
+            board=self.name, page=page
+        )
         r = self._session.get(url)
         if r.status_code != requests.codes.ok:
             r.raise_for_status()
@@ -111,7 +123,9 @@ class board(object):
                 t = self._cache[res]
                 t._should_update = True
             else:
-                t = thread.from_json(self, thj, last_modified=r.headers["last-modified"])
+                t = thread.from_json(self,
+                                     thj,
+                                     last_modified=r.headers["last-modified"])
                 self._cache[res] = t
 
             if update_each:
@@ -129,5 +143,7 @@ class board(object):
             :return: whether or not the given thread exists
             :rtype: bool
         """
-        url = self._base_url + self._urls["api_thread"].format(board=self.name, thread=res)
+        url = self._base_url + self._urls["api_thread"].format(
+            board=self.name, thread=res
+        )
         return self._session.head(url).status_code == requests.codes.ok
