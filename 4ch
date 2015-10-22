@@ -1,0 +1,76 @@
+#!/usr/bin/env python2
+# vim: sw=4 expandtab softtabstop=4 autoindent
+from __future__ import print_function
+
+import argparse
+import errno
+import os.path
+import sys
+import urllib
+
+import fourch
+
+##########
+
+p = argparse.ArgumentParser(description="Archive images from a 4chan thread.")
+p.add_argument("board",
+               help="The board's name without slashes, e.g. 'b', 'x', etc.")
+p.add_argument("threads", type=int, nargs="+",
+               help="Thread res id, e.g. 12345678.")
+p.add_argument("-i", "--ignore", action="store_true",
+               help="Ignore given threads that don't exist.")
+# p.add_argument("-j", "--json", action="store_true",
+#                help="Store thread.json with replies and metadata.")
+# TODO: exponential backoff
+# p.add_argument("-f", "--follow", action="store_true",
+#                help="Follow thread polling periodically for new images.")
+# p.add_argument("-p", "--poll", type=int, default=10,
+#                help="When --follow is on, seconds between polls."
+#                " (default: %(default)s)")
+p.add_argument("-o", "--out", default="~/4ch/{board}/{thread}",
+               help="Folder to put output in. '{board}' and '{thread}'"
+                    " are replaced with what it says on the tin."
+                    " (default: '%(default)s')")
+
+
+# https://stackoverflow.com/questions/600268/mkdir-p-functionality-in-python
+def mkdir_p(path):
+    try:
+        os.makedirs(path)
+    except OSError as exc: # Python >2.5
+        if exc.errno == errno.EEXIST and os.path.isdir(path):
+            pass
+        else: raise
+
+
+def main():
+    args = p.parse_args()
+    board = fourch.Board(args.board)
+    threads = []
+
+    for ts in args.threads:
+        if not board.thread_exists(ts):
+            print("Thread {0} on board /{1}/ doesn't exist.".format(
+                ts, args.board))
+            if args.ignore:
+                continue
+            return
+        t = board.thread(ts)
+        threads.append(t)
+
+    for t in threads:
+        # Create output folder if needs be.
+        out = os.path.expanduser(
+            args.out.format(board=t._board.name, thread=t.op.number))
+        mkdir_p(out)
+
+        images = list(t.images)  # So we can len() it
+        print(">>> Downloading {0} images from /{1}/{2}".format(
+            len(images), t._board.name, t.op.number))
+
+        for url in images:
+            fn = os.path.join(out, url.split(os.path.sep)[-1])
+            urllib.urlretrieve(url, fn)
+
+if __name__ == "__main__":
+    main()
