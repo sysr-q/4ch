@@ -65,12 +65,21 @@ def main():
         mkdir_p(out)
 
         images = list(t.images)  # So we can len() it
-        print(">>> Downloading {0} images from /{1}/{2}".format(
-            len(images), t._board.name, t.op.number))
+        header = ">>> Downloading image {{0}}/{0} from /{1}/{2}".format(
+            len(images), t._board.name, t.op.number)
 
-        for url in images:
+        for i, url in enumerate(images, 1):
+            print("\r" + header.format(i), end="")
+
             fn = os.path.join(out, url.split(os.path.sep)[-1])
+
+            if os.path.exists(fn):
+                # Skip it.
+                continue
+
             urllib.urlretrieve(url, fn)
+
+        print()
 
 if __name__ == "__main__":
     main()
