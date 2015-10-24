@@ -70,6 +70,7 @@ def main():
 
         for i, url in enumerate(images, 1):
             print("\r" + header.format(i), end="")
+            sys.stdout.flush()
 
             fn = os.path.join(out, url.split(os.path.sep)[-1])
 
